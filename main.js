@@ -5,7 +5,7 @@ let int_valor2
 do {
     str_Opcion = prompt("Seleccione una operacion: \n 1 - Suma \n 2 - Resta \n 3 - Multiplicacion \n 4 - Divicion \n 5 - Salir")
     if (str_Opcion === "5") {
-        alert("Gracias por usar calculadora javascript")
+        alert("Gracias por usar calculadora de coderJavascript Luis Emilio Pizzolanti")
         break;
     }
 
