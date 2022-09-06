@@ -1,8 +1,11 @@
 let int_montoASolicitar
 let int_intereses = 10
+let int_valorCuota
 let int_periodoMeses
 let str_opcion
 let bool_opcionCorrecta
+let arr_prestamosSimulados = []
+let str_todosLosPrestamos = "Prestamos simulados: \n"
 
 alert("Bienvenido al simulador de Prestamos")
 str_opcion = prompt("¿Desea simular un prestamo? \n 1 - Si \n 2 - No")
@@ -27,10 +30,17 @@ if (str_opcion === "1") {
                 bool_opcionCorrecta = true
             }
         } while (!bool_opcionCorrecta)
-        alert("El valor de la cuota es: " + calcularPrestamo(int_montoASolicitar, int_intereses, int_periodoMeses) / int_periodoMeses)
+        int_valorCuota = calcularPrestamo(int_montoASolicitar, int_intereses, int_periodoMeses) / int_periodoMeses
+        alert("El valor de la cuota es: " + int_valorCuota)
         str_opcion = prompt("¿Desea simular otro prestamo?  \n 1 - Si \n 2 - No")
+        arr_prestamosSimulados.push({ capital: int_montoASolicitar, cuota: int_valorCuota })
     } while (str_opcion === "1")
-}
+    arr_prestamosSimulados.forEach(function(element) {
+        str_todosLosPrestamos = str_todosLosPrestamos + `Capital solicitado: ${element.capital} - Valor cuota: ${element.cuota} \n`
+    });
+    alert(str_todosLosPrestamos)
+};
+
 alert("Gracias por usar el simulador de prestamos CoderHouse - Luis Emilio Pizzolanti")
 
 function calcularPrestamo(pInt_montoSolicitado, pInt_tasaInteres, pInt_peridodoMeses) {
