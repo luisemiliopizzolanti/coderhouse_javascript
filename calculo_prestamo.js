@@ -8,6 +8,7 @@ let arr_prestamosSimulados = []
 let str_todosLosPrestamos = "Prestamos simulados: \n"
 
 alert("Bienvenido al simulador de Prestamos")
+
 str_opcion = prompt("¿Desea simular un prestamo? \n 1 - Si \n 2 - No")
 if (str_opcion === "1") {
     do {
@@ -38,7 +39,11 @@ if (str_opcion === "1") {
     arr_prestamosSimulados.forEach(function(element) {
         str_todosLosPrestamos = str_todosLosPrestamos + `Capital solicitado: ${element.capital} - Valor cuota: ${element.cuota} \n`
     });
-    alert(str_todosLosPrestamos)
+    const historico = document.createElement('p')
+    historico.innerText = str_todosLosPrestamos
+    const divPrestamos = document.getElementById('todosLosPrestamos')
+    divPrestamos.append(historico)
+
 };
 
 alert("Gracias por usar el simulador de prestamos CoderHouse - Luis Emilio Pizzolanti")
