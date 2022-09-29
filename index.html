@@ -11,7 +11,18 @@
 </head>
 
 <body>
-    <p id="mensaje">Hola simulador javascript coderhouse Luis Emilio Pizzolanti</p>
+    <!-- <p id="mensaje">Hola simulador javascript coderhouse Luis Emilio Pizzolanti</p>
+    -->
+
+    <h1>Bienvenido al simulador de prestamos</h1>
+    <form id="prestamo">
+        <label for="monto">Ingrese el monto a solicitar: </label><br>
+        <input type="text" id="monto"><br>
+        <label for="cutoas">Cantidad de cutoas: </label><br>
+        <input type="text" id="cuotas">
+        <br>
+        <input type="submit" id="confirmar" value="Confirmar">
+    </form>
     <div id="todosLosPrestamos"></div>
     <script src='calculo_prestamo.js'></script>
 </body>
