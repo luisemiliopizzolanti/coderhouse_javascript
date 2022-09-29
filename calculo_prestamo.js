@@ -7,51 +7,70 @@ let bool_opcionCorrecta
 let arr_prestamosSimulados = []
 let str_todosLosPrestamos = "Prestamos simulados: \n"
 
-//alert("Bienvenido al simulador de Prestamos")
-
 let formPrestamo = document.getElementById("prestamo")
+let btn_borrarHistorial = document.getElementById("borrarHistorial")
 
+window.onload = (event) => {
+    mostrarPrestamos()
+}
+
+
+btn_borrarHistorial.onclick = (event) => {
+
+    Swal.fire({
+        title: 'Desea borrar el historial?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'Si',
+        denyButtonText: `No`,
+    }).then((respuesta) => {
+        if (respuesta.isConfirmed) {
+            localStorage.setItem("prestamosSolicitados", "")
+            arr_prestamosSimulados = [];
+            mostrarPrestamos();
+            Swal.fire('Borrado', '', 'success')
+        } else if (respuesta.isDenied) {
+            Swal.fire('No se han borrado', '', 'info')
+        }
+    })
+}
 
 formPrestamo.onsubmit = (event) => {
     event.preventDefault()
-    const arr_datosPrestamo = []
+    const arr_datosPrestamo = { cuotas: 0, monto: 0, valorCuota: 0 }
+
     for (const input of event.target.children) {
         //console.log(input)
         if (input.id === "cuotas") {
-            arr_datosPrestamo['cuotas'] = parseInt(input.value)
+            arr_datosPrestamo.cuotas = parseInt(input.value)
         }
         if (input.id === "monto") {
-            arr_datosPrestamo['monto'] = parseInt(input.value)
+            arr_datosPrestamo.monto = parseInt(input.value)
         }
     }
 
-    if (arr_datosPrestamo['monto'] <= 0) {
-        alert("No ingreso un monto valido, intente nuevamente")
+    if (arr_datosPrestamo.monto <= 0) {
+        Swal.fire('No ingreso un monto valido, intente nuevamente')
         bool_opcionCorrecta = false
     } else {
         bool_opcionCorrecta = true
     }
-    if (arr_datosPrestamo['cuotas'] < 1 || arr_datosPrestamo['cuotas'] > 12) {
-        alert("No ingreso un periodo valido, intente nuevamente")
+    if (arr_datosPrestamo.cuotas < 1 || arr_datosPrestamo.cuotas > 12) {
+        Swal.fire('No ingreso un periodo valido, intente nuevamente')
         bool_opcionCorrecta = false
     } else {
         bool_opcionCorrecta = true
     }
 
-    int_valorCuota = calcularPrestamo(arr_datosPrestamo['monto'], int_intereses, arr_datosPrestamo['cuotas']) / arr_datosPrestamo['cuotas']
-    arr_datosPrestamo['valorCuota'] = int_valorCuota
-    arr_prestamosSimulados.push(arr_datosPrestamo)
-        // console.log(arr_prestamosSimulados)
-    localStorage.setItem("prestamosSolicitados", JSON.stringify(arr_prestamosSimulados))
-        //Muestra arrays vacios
-    console.log(JSON.stringify(arr_prestamosSimulados))
-        //mostrarPrestamos()
-        //alert(int_valorCuota)
-        // const historico = document.createElement('p')
-        //historico.innerText = int_valorCuota
+    if (bool_opcionCorrecta) {
+        int_valorCuota = calcularPrestamo(arr_datosPrestamo.monto, int_intereses, arr_datosPrestamo.cuotas) / arr_datosPrestamo.cuotas
+        arr_datosPrestamo.valorCuota = int_valorCuota
+        arr_prestamosSimulados.push(arr_datosPrestamo)
+        localStorage.setItem("prestamosSolicitados", JSON.stringify(arr_prestamosSimulados))
+    }
 
+    mostrarPrestamos()
 
-    //divPrestamos.append(historico)
 }
 
 function mostrarPrestamos() {
@@ -60,6 +79,14 @@ function mostrarPrestamos() {
     let c, r, t
     let arr_prestamos
     t = document.createElement('table');
+    t.setAttribute("border", "2");
+    r = t.insertRow(-1);
+    c = r.insertCell();
+    c.innerHTML = "Monto Solicitado";
+    c = r.insertCell();
+    c.innerHTML = "Cantidad de Cuotas";
+    c = r.insertCell();
+    c.innerHTML = "Valor Cuota";
     json_prestamos = localStorage.getItem('prestamosSolicitados')
 
     arr_prestamos = JSON.parse(json_prestamos)
@@ -68,13 +95,11 @@ function mostrarPrestamos() {
         r = t.insertRow(-1);
         c = r.insertCell();
         console.log(prestamo)
-        c.innerHTML = prestamo["monto"];
+        c.innerHTML = prestamo.monto;
         c = r.insertCell();
-        c.innerHTML = prestamo["cuotas"];
+        c.innerHTML = prestamo.cuotas;
         c = r.insertCell();
-        c.innerHTML = prestamo["valorCuota"];
-
-
+        c.innerHTML = prestamo.valorCuota;
 
     });
 
