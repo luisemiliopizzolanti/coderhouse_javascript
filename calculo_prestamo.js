@@ -6,12 +6,32 @@ let str_opcion
 let bool_opcionCorrecta
 let arr_prestamosSimulados = []
 let str_todosLosPrestamos = "Prestamos simulados: \n"
-
 let formPrestamo = document.getElementById("prestamo")
 let btn_borrarHistorial = document.getElementById("borrarHistorial")
+let combo_entidades = document.getElementById("entidades")
+const arr_datosPrestamo = { cuotas: 0, monto: 0, valorCuota: 0, entidad: "" }
+const arr_bancos = []
+
+async function buscarBancos() {
+    let comboBanco = document.getElementById("entidades")
+    const bancos = await fetch('./entidades_financieras.json')
+    const arr_bancos = await bancos.json()
+    arr_bancos.forEach(banco => {
+        let opcion = document.createElement('option');
+        opcion.value = banco.id;
+        opcion.innerHTML = banco.nombre;
+        comboBanco.appendChild(opcion);
+    })
+
+}
+
 
 window.onload = (event) => {
     mostrarPrestamos()
+    buscarBancos()
+        //const bancos = await fetch('./bancos.json')
+        //const bancosJson = await bancos.json()
+        //console.log(bancosJson)
 }
 
 
@@ -37,7 +57,7 @@ btn_borrarHistorial.onclick = (event) => {
 
 formPrestamo.onsubmit = (event) => {
     event.preventDefault()
-    const arr_datosPrestamo = { cuotas: 0, monto: 0, valorCuota: 0 }
+
 
     for (const input of event.target.children) {
         //console.log(input)
@@ -65,7 +85,9 @@ formPrestamo.onsubmit = (event) => {
     if (bool_opcionCorrecta) {
         int_valorCuota = calcularPrestamo(arr_datosPrestamo.monto, int_intereses, arr_datosPrestamo.cuotas) / arr_datosPrestamo.cuotas
         arr_datosPrestamo.valorCuota = int_valorCuota
+
         arr_prestamosSimulados.push(arr_datosPrestamo)
+
         localStorage.setItem("prestamosSolicitados", JSON.stringify(arr_prestamosSimulados))
     }
 
@@ -102,6 +124,8 @@ function mostrarPrestamos() {
         c.innerHTML = prestamo.valorCuota;
 
     });
+
+
 
 
 
