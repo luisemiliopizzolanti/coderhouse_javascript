@@ -16,20 +16,24 @@
 
     <h1>Bienvenido al simulador de prestamos</h1>
     <form id="prestamo">
-        <label for="entidades">Seleccione a entidad financiera: </label><br>
-        <select id="entidades" name="select">
-        </select><br>
-        <label for="monto">Ingrese el monto a solicitar: </label><br>
+        <label for="entidades">Seleccione a entidad financiera: </label>
+        <br>
+        <select id="entidades" name="select"></select>
+        <label id="carga"></label>
+        <br>
+        <label id="lblMonto" for="monto">Ingrese el monto a solicitar: </label><br>
         <input type="text" id="monto"><br>
-        <label for="cuotas">Cantidad de cutoas: </label><br>
+        <label id="lblCuotas" for="cuotas">Cantidad de cuotas: </label><br>
         <input type="text" id="cuotas">
 
         <br>
         <input type="submit" id="confirmar" value="Confirmar">
+        <input type="button" id="borrarHistorial" value="Borar Historial">
+
 
     </form>
 
-    <input type="button" id="borrarHistorial" value="Borar Historial">
+
     <div id="todosLosPrestamos"></div>
     <script src='calculo_prestamo.js'></script>
 </body>

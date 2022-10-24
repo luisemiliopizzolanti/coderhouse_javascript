@@ -1,38 +1,57 @@
 let int_montoASolicitar
 let int_intereses = 10
 let int_valorCuota
-let int_periodoMeses
-let str_opcion
+let int_maxPeriodoMeses
+let str_opcion, str_entidad
 let bool_opcionCorrecta
 let arr_prestamosSimulados = []
 let str_todosLosPrestamos = "Prestamos simulados: \n"
 let formPrestamo = document.getElementById("prestamo")
 let btn_borrarHistorial = document.getElementById("borrarHistorial")
-let combo_entidades = document.getElementById("entidades")
-const arr_datosPrestamo = { cuotas: 0, monto: 0, valorCuota: 0, entidad: "" }
-const arr_bancos = []
+let combo_bancos = document.getElementById("entidades")
+const arr_datosPrestamo = { cuotas: 0, monto: 0, valorCuota: 0, entidad: "", interes: 0 }
+let arr_bancos
+
+function espera(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+combo_bancos.onclick = (event) => {
+    cargarDatosBancos(parseInt(event.target.value))
+}
 
 async function buscarBancos() {
-    let comboBanco = document.getElementById("entidades")
+    let carga = document.getElementById("carga")
+    carga.innerHTML = "Cargando financieras..."
     const bancos = await fetch('./entidades_financieras.json')
-    const arr_bancos = await bancos.json()
+    arr_bancos = await bancos.json()
+        //Para ponerle emocion jajaja
+    await espera(3000)
+
     arr_bancos.forEach(banco => {
         let opcion = document.createElement('option');
         opcion.value = banco.id;
         opcion.innerHTML = banco.nombre;
-        comboBanco.appendChild(opcion);
+        combo_bancos.appendChild(opcion);
     })
+    carga.innerHTML = ""
+    cargarDatosBancos(0)
 
 }
 
+function cargarDatosBancos(int_pocicion) {
+    int_intereses = arr_bancos[int_pocicion].tasa
+    int_maxPeriodoMeses = arr_bancos[int_pocicion].max_cuotas
+    str_entidad = arr_bancos[int_pocicion].nombre
+    let labetCuotas = document.getElementById("lblCuotas")
+    labetCuotas.innerHTML = `Cantidad de cuotas: 1 - ${int_maxPeriodoMeses}. TEA:${int_intereses}%`
+}
 
 window.onload = (event) => {
     mostrarPrestamos()
     buscarBancos()
-        //const bancos = await fetch('./bancos.json')
-        //const bancosJson = await bancos.json()
-        //console.log(bancosJson)
 }
+
 
 
 btn_borrarHistorial.onclick = (event) => {
@@ -57,8 +76,6 @@ btn_borrarHistorial.onclick = (event) => {
 
 formPrestamo.onsubmit = (event) => {
     event.preventDefault()
-
-
     for (const input of event.target.children) {
         //console.log(input)
         if (input.id === "cuotas") {
@@ -75,7 +92,7 @@ formPrestamo.onsubmit = (event) => {
     } else {
         bool_opcionCorrecta = true
     }
-    if (arr_datosPrestamo.cuotas < 1 || arr_datosPrestamo.cuotas > 12) {
+    if (arr_datosPrestamo.cuotas < 1 || arr_datosPrestamo.cuotas > int_maxPeriodoMeses) {
         Swal.fire('No ingreso un periodo valido, intente nuevamente')
         bool_opcionCorrecta = false
     } else {
@@ -85,9 +102,9 @@ formPrestamo.onsubmit = (event) => {
     if (bool_opcionCorrecta) {
         int_valorCuota = calcularPrestamo(arr_datosPrestamo.monto, int_intereses, arr_datosPrestamo.cuotas) / arr_datosPrestamo.cuotas
         arr_datosPrestamo.valorCuota = int_valorCuota
-
+        arr_datosPrestamo.entidad = str_entidad
+        arr_datosPrestamo.interes = int_intereses
         arr_prestamosSimulados.push(arr_datosPrestamo)
-
         localStorage.setItem("prestamosSolicitados", JSON.stringify(arr_prestamosSimulados))
     }
 
@@ -109,69 +126,34 @@ function mostrarPrestamos() {
     c.innerHTML = "Cantidad de Cuotas";
     c = r.insertCell();
     c.innerHTML = "Valor Cuota";
+    c = r.insertCell();
+    c.innerHTML = "Entidad Financiera";
+    c = r.insertCell();
+    c.innerHTML = "TEA";
     json_prestamos = localStorage.getItem('prestamosSolicitados')
+    if (json_prestamos === "") {
+        divPrestamos.innerHTML = "<p>No hay historial de prestamos</p>"
+    } else {
+        arr_prestamosSimulados = JSON.parse(json_prestamos)
+        console.log(arr_prestamosSimulados)
+        arr_prestamosSimulados.forEach(prestamo => {
+            r = t.insertRow(-1);
+            c = r.insertCell();
+            c.innerHTML = prestamo.monto;
+            c = r.insertCell();
+            c.innerHTML = prestamo.cuotas;
+            c = r.insertCell();
+            c.innerHTML = `$${prestamo.valorCuota.toFixed(2)}`;
+            c = r.insertCell();
+            c.innerHTML = prestamo.entidad;
+            c = r.insertCell();
+            c.innerHTML = `${prestamo.interes}%`;
 
-    arr_prestamos = JSON.parse(json_prestamos)
-
-    arr_prestamos.forEach(prestamo => {
-        r = t.insertRow(-1);
-        c = r.insertCell();
-        console.log(prestamo)
-        c.innerHTML = prestamo.monto;
-        c = r.insertCell();
-        c.innerHTML = prestamo.cuotas;
-        c = r.insertCell();
-        c.innerHTML = prestamo.valorCuota;
-
-    });
-
-
-
-
-
-    /* c.innerHTML = 123;
-     c = r.insertCell(1);
-     c.innerHTML = 456;*/
-    divPrestamos.append(t)
-        //divPrestamos.removeChild(divPrestamos.firstChild)
+        });
+        divPrestamos.append(t)
+    }
 }
 
-/*
-        int_montoASolicitar = parseInt(prompt("Ingrese monto a solicitar"))
-        
-}
-
-
-if (str_opcion === "1") {
-    do {
-        do {
-
-        }
-        while (!bool_opcionCorrecta)
-        do {
-            int_periodoMeses = parseInt(prompt("Ingrese la cantidad de cuotas (Min 1 - Max 12)"))
-            if (int_periodoMeses < 1 || int_periodoMeses > 12) {
-                alert("No ingreso un periodo valido, intente nuevamente")
-                bool_opcionCorrecta = false
-            } else {
-                bool_opcionCorrecta = true
-            }
-        } while (!bool_opcionCorrecta)
-        int_valorCuota = calcularPrestamo(int_montoASolicitar, int_intereses, int_periodoMeses) / int_periodoMeses
-        alert("El valor de la cuota es: " + int_valorCuota)
-        str_opcion = prompt("¿Desea simular otro prestamo?  \n 1 - Si \n 2 - No")
-        arr_prestamosSimulados.push({ capital: int_montoASolicitar, cuota: int_valorCuota })
-    } while (str_opcion === "1")
-    arr_prestamosSimulados.forEach(function(element) {
-        str_todosLosPrestamos = str_todosLosPrestamos + `Capital solicitado: ${element.capital} - Valor cuota: ${element.cuota} \n`
-    });
-    const historico = document.createElement('p')
-    historico.innerText = str_todosLosPrestamos
-    const divPrestamos = document.getElementById('todosLosPrestamos')
-    divPrestamos.append(historico)
-
-};
-*/
 
 function calcularPrestamo(pInt_montoSolicitado, pInt_tasaInteres, pInt_peridodoMeses) {
     //La funcion utilizada para caluclar el capital a devolver es la de interes compuesto
