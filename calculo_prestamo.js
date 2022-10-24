@@ -132,7 +132,7 @@ function mostrarPrestamos() {
     c.innerHTML = "TEA";
     json_prestamos = localStorage.getItem('prestamosSolicitados')
     console.log(json_prestamos)
-    if (json_prestamos === null) {
+    if (json_prestamos === null || json_prestamos === "") {
         divPrestamos.innerHTML = "<p>No hay historial de prestamos</p>"
     } else {
         arr_prestamosSimulados = JSON.parse(json_prestamos)
