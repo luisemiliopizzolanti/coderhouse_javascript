@@ -23,7 +23,7 @@ combo_bancos.onclick = (event) => {
 async function buscarBancos() {
     let carga = document.getElementById("carga")
     carga.innerHTML = "Cargando financieras..."
-    const bancos = await fetch('./entidades_financieras.json')
+    const bancos = await fetch('entidades_financieras.json')
     arr_bancos = await bancos.json()
         //Para ponerle emocion jajaja
     await espera(3000)
