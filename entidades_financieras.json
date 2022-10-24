@@ -15,5 +15,11 @@
          "nombre": "CrediTazo",
          "tasa": 20,
          "max_cuotas": 3
+     },
+   {
+         "id": 3,
+         "nombre": "PrestAmigo",
+         "tasa": 15,
+         "max_cuotas": 6
      }
  ]
